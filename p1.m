@@ -5,15 +5,10 @@
     close all
 %% Input
     [d,airports] = distance('group11.xlsx');
-    %[C,k] = opcost('group11.xlsx');
+    [C,Yield,k] = opcost('group11.xlsx');
+    
     Nodes   = airports(2);          %Number of airports;
-    
-    Yield = 5.9*(reshape(d,Nodes*Nodes,1)).^(-0.76)+0.043;
-    
-    %Remove infinite values of Yield and set them to zero for cases where 
-    %i=j; 
-    indx_y = find(isinf(Yield));
-    Yield(indx_y) = 0;
+    acType  = k;
 %% Initiate CPLEX Model
 %   Create model
         model                   =   'Problem1_Model';
@@ -21,5 +16,6 @@
         cplex.Model.sense       =   'maximize'; 
 
 %   Decision variable
-  
-    
+        DV                      =  Nodes*Nodes*(acType+2);
+%% Objective Function 
+        obj = reshape([ Yield ; Yield; reshape(C,3,Nodes*Nodes)],DV,1);

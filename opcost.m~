@@ -12,8 +12,8 @@
 % Output
 %     C= Total Cost;
 %------------------------------------------------------------------------
-function [C,k]=opcost(filename)
-
+%function [C,k]=opcost(filename)
+    filename = 'group11.xlsx'
     fleet = xlsread(filename,'B12:F12');
     indx  = find(fleet);
     k = length(indx);        %Types of aircraft;
@@ -32,15 +32,14 @@ function [C,k]=opcost(filename)
       
     for i=1:airports
         for j=1:airports
-            for 
-                Cost_timed_t=Cost_timed(k)*d(/V(k);
+                Cost_timed_t=d(i,j)*Cost_timed./V;
                 Cost_fuel_t=Cost_fuel(k)*d;
                 Cost_fixed_t=Cost_fixed(k);
                 C=Cost_timed_t+Cost_fuel_t+Cost_fixed_t;
         end
     end
 
-end
+%end
        
   
     
