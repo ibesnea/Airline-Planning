@@ -9,7 +9,7 @@
 %   Output:
 %       d= distance between airport i and j; 
 %--------------------------------------------------------------------------
-function [d,szlat] = distance(filename)
+function d,lat = distance(filename)
     
     lat  = xlsread(filename,'C6:Z6')*pi/180; % Convert lat to deg;
     long = xlsread(filename,'C7:Z7')*pi/180; % Convert long to deg;
