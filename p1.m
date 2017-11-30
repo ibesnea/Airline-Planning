@@ -16,4 +16,13 @@
     %i=j; 
     indx_y = find(isinf(Yield));
     Yield(indx_y) = 0;
-%% 
+%% Initiate CPLEX Model
+%   Create model
+        model                   =   'Problem1_Model';
+        cplex                   =   Cplex(model);
+        cplex.Model.sense       =   'maximize'; 
+
+%   Decision variables
+        DV                      = Nodes * Nodes;
+  
+    
