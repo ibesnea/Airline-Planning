@@ -5,10 +5,8 @@
     close all
 %% Input
     [d,airports] = distance('group11.xlsx');
-    fleet = xlsread('group11.xlsx','B12:F12');
-    
+    %[C,k] = opcost('group11.xlsx');
     Nodes   = airports(2);          %Number of airports;
-    k = length(find(fleet));        %Types of aircraft; 
     
     Yield = 5.9*(reshape(d,Nodes*Nodes,1)).^(-0.76)+0.043;
     
@@ -22,7 +20,6 @@
         cplex                   =   Cplex(model);
         cplex.Model.sense       =   'maximize'; 
 
-%   Decision variables
-        DV                      = Nodes * Nodes;
+%   Decision variable
   
     

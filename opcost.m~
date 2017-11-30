@@ -32,6 +32,7 @@ function [C,k]=opcost(filename)
       
     for i=1:airports
         for j=1:airports
+            for 
                 Cost_timed_t=Cost_timed(k)*d(/V(k);
                 Cost_fuel_t=Cost_fuel(k)*d;
                 Cost_fixed_t=Cost_fixed(k);
