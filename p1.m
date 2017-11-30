@@ -8,7 +8,7 @@
     fleet = xlsread('group11.xlsx','B12:F12');
     
     Nodes   = airports(2);          %Number of airports;
-    ACTypes = length(find(fleet));  %Types of aircraft; 
+    k = length(find(fleet));        %Types of aircraft; 
     
     Yield = 5.9*(reshape(d,Nodes*Nodes,1)).^(-0.76)+0.043;
     
