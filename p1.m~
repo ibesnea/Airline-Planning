@@ -1,0 +1,8 @@
+%% Initialization
+    addpath('/Users/Claudia/Documents/MSc-1/Q2/AE4423/Airline-Planning')
+%% Read Data
+    filename = 'group11.xlsx'
+    lat  = xlsread(filename,'C6:Z6')
+    long = xlsread(filename,'D6:Z6')
+    
+    sigma
