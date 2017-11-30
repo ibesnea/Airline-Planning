@@ -11,9 +11,10 @@
     
     for i=1:szlat(2)
         for j=1:szlong(2)
-           arc(i,j) = 2* asin((sin((lat(i)-lat(j))/2))^2+ ...
-                    cos(lat(i))*cos(lat(j)) *(sin((long(i))-long(j))/2)^2)
+           arc(i,j) = 2*asin(((sin((lat(i)-lat(j)))/2)^2+ ...
+                    cos(lat(i))*cos(lat(j)) * ...
+                    (sin((long(i))-long(j))/2)^2)^0.5);
         end
     end
     
-    d = arc
+    d = arc*R_e; 
