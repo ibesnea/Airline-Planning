@@ -15,6 +15,7 @@
 %     Yield = Yield for flight from airport i to j; 
 %------------------------------------------------------------------------
 function [C,Yieldd,k]=opcost(filename)
+    
     fleet = xlsread(filename,'B12:F12');
     indx  = find(fleet);
     k = length(indx);        %Types of aircraft;

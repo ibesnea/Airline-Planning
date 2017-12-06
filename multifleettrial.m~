@@ -75,29 +75,29 @@ end
          ub                     =   inf(DV,1);
          ctype                  =   char(ones(1,(DV))*('I'));
          
-        l = 1;    % Array with DV names
+         l = 1;    % Array with DV names
         for i = 1:Nodes
             for j = 1:Nodes  % of the x_{ij} variables
-                NameDV (l,:)  = ['X_' num2str(i) ',' num2str(j) '_' num2str(0)];
+                NameDV (l,:)  = ['X_' num2str(i) ',' num2str(j)];
                 l = l + 1;
             end
         end
         for i = 1:Nodes
             for j = 1:Nodes  % of the w_{ij} variables
-                NameDV (l,:)  = ['W_' num2str(i) ',' num2str(j) '_' num2str(0)];
+                NameDV (l,:)  = ['W_' num2str(i) ',' num2str(j)];
                 l = l + 1;
             end
         end
         for k =1:ACtype
             for i = 1:Nodes
                 for j = 1:Nodes % of the z_{ij}^k variables
-                    NameDV (l,:)  = ['Z_' num2str(i) ',' num2str(j) '_' num2str(k)];
+                    NameDV (l,:)  = ['Z_' num2str(i) ',' num2str(j)];
                     l = l + 1;
                 end
             end
         end
-         
-        cplex.addCols(obj, [], lb, ub, ctype, NameDV);
+%         
+%         cplex.addCols(obj, [], lb, ub, ctype, NameDV);
    
 %%  Constraints
 % %   C1: Demand constraint    
