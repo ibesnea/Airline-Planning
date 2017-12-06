@@ -1,4 +1,4 @@
-
+function multifleettrial()
 %%  Initialization
     %addpath('/Users/Claudia/Documents/MSc-1/Q2/AE4423/Airline-Planning');
 clear all
@@ -7,7 +7,7 @@ close all
 %     warning('off','MATLAB:lang:badlyScopedReturnValue')
 %     warning('off','MATLAB:xlswrite:NoCOMServer')
 %     savepath
-
+try
 %%  Determine input
 %   Select input file and sheet
 filename    =  'Trial.xlsx';
@@ -99,7 +99,7 @@ end
         cplex.addCols(obj, [], lb, ub, ctype, NameDV);
    
 %%  Constraints
-%   C1: Demand constraint    
+%  C1: Demand constraint    
     C1 = zeros(1,DV);
     for i = 1:Nodes
         for j = 1:Nodes
@@ -109,59 +109,59 @@ end
     end
     cplex.addRows(0,C1,demand(i,j),sprintf('Demand Constraint%d_%d_%d',i,j));
     
-% %   C2: Transfer passenger constraint
-%     C2 = zeros(1,DV);
-%     for i = 1:Nodes
-%         for j = 1:Nodes
-%             C2(Windex(i,j)) = 1;
-%         end
-%     end
-%     cplex.addRows(0,C2,demand(i,j).*gi(i).*gj(j),sprintf('Demand Constraint%d_%d_%d',i,j));
-%     
-% %   C3: Capacity verification constraints
-%     for i = 1:Nodes
-%         for j = 1:Nodes
-%             C3 = zeros(1,DV);
-%             for m = 1:Nodes
-%                 for k = 1:ACtype
-%                     C3(Zindex(i,j,k)) = -nseats(k)*-LF(k);
-%                 end
-%                 C3(Windex(i,m))=(1-gj(j));
-%                 C3(Windex(m,j))=(1-gi(i));
-%             end
-%             C3(Xindex(i,j))=1;
-%             cplex.addRows(-inf,C3,0,sprintf('CapacityVerification'));
-%         end
-%     end
-%     
-% %   C4: Flow balance
-%     for i = 1:Nodes
-%         for k = 1:ACtype
-%             C4 = zeros(1,DV);
-%             for j = 1:Nodes
-%                 C4(Zindex(i,j,k)) =  1;
-%                 C4(Zindex(j,i,k)) = -1;
-%             end
-%             cplex.addRows(0,C4,0,sprintf('FlowBalanceNode%d_%d',i,k));
-%         end
-%     end
-%     
-% %   C5: Aircraft utilization
-%     for k = 1:ACtype
-%         C5 = zeros(1,DV);
-%         for i = 1:Nodes
-%             for j = 1:Nodes
-%                 C5(Zindex(i,j,k)) = (distance(i,j)/speed(k)+LTO(k));
-%             end
-%         end
-%         cplex.addRows(0,C5,BT(k)*nfleet(k),sprintf('AC utilization'));
-%     end
-%     
-% %%  Execute model
-% %   Run CPLEX
-%         cplex.solve();
-%         cplex.writeModel([model '.lp']);
-%                 
+%   C2: Transfer passenger constraint
+    C2 = zeros(1,DV);
+    for i = 1:Nodes
+        for j = 1:Nodes
+            C2(Windex(i,j)) = 1;
+        end
+    end
+    cplex.addRows(0,C2,demand(i,j).*gi(i).*gj(j),sprintf('Demand Constraint%d_%d_%d',i,j));
+    
+%   C3: Capacity verification constraints
+    for i = 1:Nodes
+        for j = 1:Nodes
+            C3 = zeros(1,DV);
+            for m = 1:Nodes
+                for k = 1:ACtype
+                    C3(Zindex(i,j,k)) = -nseats(k)*-LF(k);
+                end
+                C3(Windex(i,m))=(1-gj(j));
+                C3(Windex(m,j))=(1-gi(i));
+            end
+            C3(Xindex(i,j))=1;
+            cplex.addRows(-inf,C3,0,sprintf('CapacityVerification'));
+        end
+    end
+    
+%   C4: Flow balance
+    for i = 1:Nodes
+        for k = 1:ACtype
+            C4 = zeros(1,DV);
+            for j = 1:Nodes
+                C4(Zindex(i,j,k)) =  1;
+                C4(Zindex(j,i,k)) = -1;
+            end
+            cplex.addRows(0,C4,0,sprintf('FlowBalanceNode%d_%d',i,k));
+        end
+    end
+    
+%   C5: Aircraft utilization
+    for k = 1:ACtype
+        C5 = zeros(1,DV);
+        for i = 1:Nodes
+            for j = 1:Nodes
+                C5(Zindex(i,j,k)) = (distance(i,j)/speed(k)+LTO(k));
+            end
+        end
+        cplex.addRows(0,C5,BT(k)*nfleet(k),sprintf('AC utilization'));
+    end
+    
+%%  Execute model
+%   Run CPLEX
+        cplex.solve();
+        cplex.writeModel([model '.lp']);
+                
 % %%  Postprocessing
 % %   Store direct results
 %     status                      =   cplex.Solution.status;       
@@ -195,20 +195,20 @@ end
 %             end
 %         end
 %     end
-% end
-%     function out = Xindex(m,n)
-%     out = Nodes*Nodes*ACtype + (m - 1) * Nodes + n;
-%     end
-%     function out = Windex(m,n)
-%     out = Nodes*Nodes*ACtype + (m - 1)*Nodes + n;
-%     end
-%     function out = Zindex(m, n, p)
-%     out = (m - 1) * Nodes + n + Nodes*Nodes*(p-1);
-%     end
-% end
-%    
-%         
-%         
+end
+    function out = Xindex(m,n)
+    out = Nodes*Nodes*ACtype + (m - 1) * Nodes + n;
+    end
+    function out = Windex(m,n)
+    out = Nodes*Nodes*ACtype + (m - 1)*Nodes + n;
+    end
+    function out = Zindex(m, n, p)
+    out = (m - 1) * Nodes + n + Nodes*Nodes*(p-1);
+    end
+end
+   
+        
+        
         
         
         
