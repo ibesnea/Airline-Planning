@@ -1,9 +1,9 @@
-k = 5                              % k = ACtype
-Nodes = 19                         % Nodes = 19
+ACtype = 5                         
+Nodes = 19                         
 
 TAT = xlsread('group11.xlsx',1,'B45:F45');
 TATij = zeros(Nodes,Nodes,k)
-for k=1:k                          %1: ACtype (e.g. 5)
+for k=1:ACtype                     %1: ACtype (e.g. 5)
     for i=1:Nodes                  %1: Nodes (e.g. 19)
         for j=1:Nodes              %1: Nodes (e.g. 19)
             if j == i                
