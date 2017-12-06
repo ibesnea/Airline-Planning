@@ -96,20 +96,19 @@ end
                 end
             end
         end
-         
         cplex.addCols(obj, [], lb, ub, ctype, NameDV);
    
 %%  Constraints
-% %   C1: Demand constraint    
-%     C1 = zeros(1,DV);
-%     for i = 1:Nodes
-%         for j = 1:Nodes
-%             C1(Xindex(1,j))= 1;
-%             C1(Windex(i,j))= 1;
-%         end
-%     end
-%     cplex.addRows(0,C1,demand(i,j),sprintf('Demand Constraint%d_%d_%d',i,j));
-%     
+%   C1: Demand constraint    
+    C1 = zeros(1,DV);
+    for i = 1:Nodes
+        for j = 1:Nodes
+            C1(Xindex(1,j))= 1;
+            C1(Windex(i,j))= 1;
+        end
+    end
+    cplex.addRows(0,C1,demand(i,j),sprintf('Demand Constraint%d_%d_%d',i,j));
+    
 % %   C2: Transfer passenger constraint
 %     C2 = zeros(1,DV);
 %     for i = 1:Nodes

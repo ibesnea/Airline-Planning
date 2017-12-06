@@ -8,6 +8,7 @@
 %       j= destination airport; 
 %   Output:
 %       d= distance between airport i and j; 
+%       szalat = 
 %--------------------------------------------------------------------------
 function [d,szlat] = distance(filename)
     

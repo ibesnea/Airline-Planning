@@ -15,11 +15,12 @@
 %     Yield = Yield for flight from airport i to j; 
 %------------------------------------------------------------------------
 function [C,Yieldd,k]=opcost(filename)
-    
+    % Determine the types of aircraft in fleet.
     fleet = xlsread(filename,'B12:F12');
     indx  = find(fleet);
-    k = length(indx);        %Types of aircraft;
+    k = length(indx); %Types of aircraft;
     
+    %Obtain
     [d,airports] = distance(filename);
     airports = airports(2);
     
@@ -43,11 +44,11 @@ function [C,Yieldd,k]=opcost(filename)
         end
     end
     
-     Yield = 5.9*(reshape(d,1,airports*airports)).^(-0.76)+0.043;
+     Yield = 5.9*(reshape(d,airports*airports,1)).^(-0.76)+0.043;
      %Remove infinite values of Yield and set them to zero for cases where 
      %i=j; 
      Yield(find(isinf(Yield))) = 0;
-     Yieldd = Yield.*reshape(d,1,airports*airports);
+     Yieldd = Yield.*reshape(d,airports*airports,1);
 end
        
   

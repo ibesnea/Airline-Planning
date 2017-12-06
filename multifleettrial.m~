@@ -75,41 +75,40 @@ end
          ub                     =   inf(DV,1);
          ctype                  =   char(ones(1,(DV))*('I'));
          
-         l = 1;    % Array with DV names
+        l = 1;    % Array with DV names
         for i = 1:Nodes
             for j = 1:Nodes  % of the x_{ij} variables
-                NameDV (l,:)  = ['X_' num2str(i) ',' num2str(j)];
+                NameDV (l,:)  = ['X_' num2str(i) ',' num2str(j) '_' num2str(0)];
                 l = l + 1;
             end
         end
         for i = 1:Nodes
             for j = 1:Nodes  % of the w_{ij} variables
-                NameDV (l,:)  = ['W_' num2str(i) ',' num2str(j)];
+                NameDV (l,:)  = ['W_' num2str(i) ',' num2str(j) '_' num2str(0)];
                 l = l + 1;
             end
         end
         for k =1:ACtype
             for i = 1:Nodes
                 for j = 1:Nodes % of the z_{ij}^k variables
-                    NameDV (l,:)  = ['Z_' num2str(i) ',' num2str(j)];
+                    NameDV (l,:)  = ['Z_' num2str(i) ',' num2str(j) '_' num2str(k)];
                     l = l + 1;
                 end
             end
         end
-%         
-%         cplex.addCols(obj, [], lb, ub, ctype, NameDV);
+        cplex.addCols(obj, [], lb, ub, ctype, NameDV);
    
 %%  Constraints
-% %   C1: Demand constraint    
-%     C1 = zeros(1,DV);
-%     for i = 1:Nodes
-%         for j = 1:Nodes
-%             C1(Xindex(1,j))= 1;
-%             C1(Windex(i,j))= 1;
-%         end
-%     end
-%     cplex.addRows(0,C1,demand(i,j),sprintf('Demand Constraint%d_%d_%d',i,j));
-%     
+%   C1: Demand constraint    
+    C1 = zeros(1,DV);
+    for i = 1:Nodes
+        for j = 1:Nodes
+            C1(Xindex(1,j))= 1;
+            C1(Windex(i,j))= 1;
+        end
+    end
+    cplex.addRows(0,C1,demand(i,j),sprintf('Demand Constraint%d_%d_%d',i,j));
+    
 % %   C2: Transfer passenger constraint
 %     C2 = zeros(1,DV);
 %     for i = 1:Nodes
