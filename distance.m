@@ -12,8 +12,8 @@
 %--------------------------------------------------------------------------
 function [d,szlat] = distance(filename)
     
-    lat  = xlsread(filename,'C6:Z6')*pi/180; % Convert lat to deg;
-    long = xlsread(filename,'C7:Z7')*pi/180; % Convert long to deg;
+    lat  = xlsread(filename,'C6:V6')*pi/180; % Convert lat to deg;
+    long = xlsread(filename,'C7:V7')*pi/180; % Convert long to deg;
     R_e = 6371; 
     
     szlat = size(lat);  % Number of airports; 

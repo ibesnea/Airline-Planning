@@ -140,13 +140,12 @@
         C5 = zeros(1,DV);
         for i = 1:Nodes
             for j = 1:Nodes
-                C5(Zindex(i,j,k,Nodes)) = (d(i,j)/speed(k)+...
-                                           turn(i+(k-1)*Nodes,j));
+                C5(Zindex(i,j,k,Nodes)) = (d(i,j)/speed(k)+tat(k));
             end
         end
-        cplex.addRows(0,C5,BT*fleet(k),sprintf('AC utilization'));
+        cplex.addRows(0,C5,BT(k)*nfleet(k),sprintf('AC utilization'));
     end
-%   C6:
+    
 % Functions to determine the index of the DV based on (i,j,k)
 function out = Xindex(m,n,Nodes)
     out = (m - 1) * Nodes + n;   
@@ -157,9 +156,7 @@ end
 function out = Zindex(m,n,p,Nodes)
     out = Nodes*Nodes*2 + (m - 1) * Nodes + n + Nodes*Nodes*(p-1);   
 end   
-function out = tatindex(m,p,Nodes)
-    
-end
+        
     
     
     

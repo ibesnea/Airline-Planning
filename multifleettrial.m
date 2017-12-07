@@ -69,7 +69,7 @@ end
              Z(:,k) = distance*cost(k)*nseats(k);
          end
          % number of flights with aircraft type    
-         Z        = reshape(Z,Nodes*Nodes*ACtype,1);     
+         Z        = -reshape(Z,Nodes*Nodes*ACtype,1);     
          obj      =   [X;W;Z];
          lb                     =   zeros(DV,1);
          ub                     =   inf(DV,1);
@@ -121,12 +121,14 @@ end
     end
     
 %   C3: Capacity verification constraints
-    for i = 1:Nodes
-        for j = 1:Nodes
+    
+    for i=1:Nodes
+        for j= 1:Nodes
             C3 = zeros(1,DV);
             C3(Xindex(i,j,Nodes)) =  1;
-            for m = 1:Nodes
+            for m = 1:Nodes 
                 C3(Windex(i,m,Nodes))= (1-gj(j));
+                Windex(m,j,Nodes);
                 C3(Windex(m,j,Nodes))= (1-gi(i));
             end
             for k = 1:ACtype
@@ -207,7 +209,7 @@ end
 function out = Zindex(m,n,p,Nodes)
     out = Nodes*Nodes*2 + (m - 1) * Nodes + n + Nodes*Nodes*(p-1);   
 end   
-        
+%         
         
         
         

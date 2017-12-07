@@ -14,7 +14,7 @@
 %     C= Total Cost;
 %     Yield = Yield for flight from airport i to j; 
 %------------------------------------------------------------------------
-function [C,Yieldd,k,fleet,Cost_lease]=opcost(filename)
+function [C,Yieldd,k,fleet]=opcost(filename)
     % Determine the types of aircraft in fleet.
     fleet_all = xlsread(filename,'B12:F12');
     indx  = find(fleet_all);
@@ -31,8 +31,8 @@ function [C,Yieldd,k,fleet,Cost_lease]=opcost(filename)
     Cost_timed = Cost_timed(indx);
     Cost_fuel=xlsread(filename,'M46:Q46');
     Cost_fuel= Cost_fuel(indx);
-    Cost_lease  = xlsread(filename,'M43:Q43');
-    Cost_lease  = Cost_lease(indx).*fleet;
+    Cost_lease  = xlsread(filenamem,'M43:Q43');
+    Cost_lease  = Cost_lease(indx).*;
     V=xlsread(filename,'B43:F43');
     V= V(indx);
     

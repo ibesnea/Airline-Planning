@@ -1,0 +1,10 @@
+%function [acchar(1,:) ,acchar(2,:),acchar(3,:),acchar(4,:)]= accharcteristics(filename)
+    fleet = xlsread('group11.xlsx','B12:F12');
+    indx  = find(fleet);
+    k = length(indx); %Types of aircraft;
+    x = xlsread('group11.xlsx','B43:F47');
+    acchar = [];
+    for i=1:k
+        acchar = [acchar x(:,indx(i));
+    end
+%end
