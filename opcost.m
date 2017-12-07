@@ -14,7 +14,7 @@
 %     C= Total Cost;
 %     Yield = Yield for flight from airport i to j; 
 %------------------------------------------------------------------------
-function [C,Yieldd,k,fleet,Cost_lease]=opcost(filename)
+function [C,Yield,k,fleet,Cost_lease]=opcost(filename)
     % Determine the types of aircraft in fleet.
     fleet_all = xlsread(filename,'B12:F12');
     indx  = find(fleet_all);
@@ -51,7 +51,6 @@ function [C,Yieldd,k,fleet,Cost_lease]=opcost(filename)
      %Remove infinite values of Yield and set them to zero for cases where 
      %i=j; 
      Yield(find(isinf(Yield))) = 0;
-     Yieldd = Yield.*reshape(d,airports*airports,1);
 end
        
   

@@ -20,6 +20,8 @@
     LF= 0.75; 
     % Average utilization time for aircraft (all types)
     BT= 10;   
+    % Range matrix of possible combos
+    a = combo(d,Nodes,actype,max_range);
     
 %% Parameters 
     % g_h = 0 if a hub is located at airport h; 1 otherwise
@@ -146,8 +148,35 @@
         end
         cplex.addRows(0,C5,BT*fleet(k),sprintf('AC utilization'));
     end
-%   C6:
-% Functions to determine the index of the DV based on (i,j,k)
+% C6: number aircraft
+    for k= 1:actype
+       C6 = zeros(1,DV);
+       C6((DV-actype)+k) = 1;
+       cplex.addRows(fleet(k),C6,fleet(k),sprintf('NumberofAC%d_%d',k));
+    end
+%C7:range constraint
+    for k=1:actype
+        for i = 1:Nodes
+            for j=1:Nodes
+                C7 = zeros(1,DV);
+                C7(Zindex(i,j,k,Nodes)) = 1;
+                cplex.addRows(0,C7,a(i+(k-1)*Nodes,j),sprintf('RangeConstraint%d_%d_%d_%d',i,j,k));
+            end
+        end
+    end
+%%  Execute model
+%   Run CPLEX
+        cplex.solve();
+        cplex.writeModel([model '.lp']);
+%%  Postprocessing
+  %Store direct results
+    status                      =   cplex.Solution.status;       
+    if status == 101 || status == 102 || status == 105
+        sol.profit = cplex.Solution.objval; 
+    end
+        fprintf('\n-----------------------------------------------------------------\n');
+    fprintf ('Objective function value: %10.1f \n', sol.profit);
+%% Functions to determine the index of the DV based on (i,j,k)
 function out = Xindex(m,n,Nodes)
     out = (m - 1) * Nodes + n;   
 end
@@ -156,11 +185,8 @@ function out = Windex(m,n,Nodes)
 end
 function out = Zindex(m,n,p,Nodes)
     out = Nodes*Nodes*2 + (m - 1) * Nodes + n + Nodes*Nodes*(p-1);   
-end   
-function out = tatindex(m,p,Nodes)
-    
 end
-    
+
     
     
 
