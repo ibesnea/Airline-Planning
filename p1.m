@@ -19,7 +19,7 @@
     % Average load factor for European Flights
     LF= 0.75; 
     % Average utilization time for aircraft (all types)
-    BT= 10;   
+    BT= 70*60;   
     % Range matrix of possible combos
     a = combo(d,Nodes,actype,max_range);
     
