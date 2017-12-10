@@ -8,9 +8,9 @@ function [speed,nseats,tat,max_range,runway] ...
     for i=1:k
         acchar = [acchar x(:,indx(i))];
     end
-    speed = acchar(1,:);
-    nseats = acchar(2,:);
-    tat    = acchar(3,:);
-    max_range  = acchar(4,:);
-    runway     = acchar(5,:);
+    speed = acchar(1,:); % km/h
+    nseats = acchar(2,:);% 
+    tat    = acchar(3,:)/60; %h
+    max_range  = acchar(4,:); %km
+    runway     = acchar(5,:)/10^3; %km
 end

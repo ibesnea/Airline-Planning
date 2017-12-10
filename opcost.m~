@@ -50,8 +50,7 @@ function [C,Yield,k,fleet,Cost_lease]=opcost(filename)
      Yield = (5.9*(reshape(d,airports*airports,1)).^(-0.76)+0.043);
      %Remove infinite values of Yield and set them to zero for cases where 
      %i=j;
-     A = Yield==Inf;
-     Yield(A) = 0;
+     Yield 
 end
        
   

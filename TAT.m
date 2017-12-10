@@ -9,8 +9,8 @@ function TURNAT = TAT(actype,Nodes,tat)
                     TAT_k(i,j)=2*TAT_k(i,j);
                 end
                 if i==1 || j==1
-                    if TAT_k(i,j)<=60
-                        TAT_k(i,j)=60;
+                    if TAT_k(i,j)<= 1
+                        TAT_k(i,j)= 1;
                     end
                 end
                 if i==j

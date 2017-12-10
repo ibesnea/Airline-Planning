@@ -19,7 +19,7 @@
     % Average load factor for European Flights
     LF= 0.75; 
     % Average utilization time for aircraft (all types)
-    BT= 70*60;   
+    BT= 70;   
     % Range matrix of possible combos
     a = combo(d,Nodes,actype,max_range);
     
@@ -49,8 +49,8 @@
         DV                      =  Nodes*Nodes+Nodes*Nodes+...
                                    Nodes*Nodes*actype+actype;
 %% Objective Function 
-        X = Yield;% Direct Flow
-        W = Yield;% Flow from airport transfer in hub
+        X = Yield.*(reshape(d,Nodes*Nodes,1));% Direct Flow
+        W = Yield.*(reshape(d,Nodes*Nodes,1));% Flow from airport transfer in hub
         Z = -reshape(C,Nodes*Nodes*actype,1);
         N = -reshape(leasing,actype,1); 
         obj = [X;W;Z;N];
@@ -108,7 +108,7 @@
         for j = 1:Nodes
             C2 = zeros(1,DV);
             C2(Windex(i,j,Nodes)) = 1;
-            cplex.addRows(0,C2,q(i,j)*g_i(i)*g_j(j),sprintf('Transfer Pax %d_%d_%d',i,j));
+            cplex.addRows(-Inf,C2,q(i,j)*g_i(i)*g_j(j),sprintf('Transfer Pax %d_%d_%d',i,j));
         end
     end
 %   C3: Capacity verification constraints
@@ -123,7 +123,7 @@
             for k = 1:actype
                 C3(Zindex(i,j,k,Nodes)) = -nseats(k)*LF;
             end
-            cplex.addRows(-Inf,C3,0,sprintf('CapacityVerification%d_%d_%d_%d',i,j,k));
+            cplex.addRows(-Inf,C3,0,sprintf('CapacityVerification%d_%d_%d_%d',i,j));
         end
     end
 %   C4: Flow balance
@@ -134,7 +134,7 @@
                 C4(Zindex(i,j,k,Nodes)) =  1;
                 C4(Zindex(j,i,k,Nodes)) = -1;
             end
-            cplex.addRows(0,C4,0,sprintf('FlowBalanceNode%d_%d_%d',i,k));
+            cplex.addRows(0,C4,0,sprintf('FlowBalanceNode_%d_%d',i,k));
         end
     end
 %   C5: Aircraft utilization
@@ -146,13 +146,13 @@
                                            turn(i+(k-1)*Nodes,j));
             end
         end
-        cplex.addRows(0,C5,BT*fleet(k),sprintf('AC utilization'));
+        cplex.addRows(0,C5,BT*fleet(k),sprintf('ACutilization_%d',k));
     end
 % C6: number aircraft
     for k= 1:actype
        C6 = zeros(1,DV);
        C6((DV-actype)+k) = 1;
-       cplex.addRows(fleet(k),C6,fleet(k),sprintf('NumberofAC%d_%d',k));
+       cplex.addRows(fleet(k),C6,fleet(k),sprintf('NumberofAC_%d',k));
     end
 %C7:range constraint
     for k=1:actype
@@ -160,7 +160,7 @@
             for j=1:Nodes
                 C7 = zeros(1,DV);
                 C7(Zindex(i,j,k,Nodes)) = 1;
-                cplex.addRows(0,C7,a(i+(k-1)*Nodes,j),sprintf('RangeConstraint%d_%d_%d_%d',i,j,k));
+                cplex.addRows(0,C7,a(i+(k-1)*Nodes,j),sprintf('RangeConstraint_%d_%d_%d',i,j,k));
             end
         end
     end
@@ -174,8 +174,9 @@
     if status == 101 || status == 102 || status == 105
         sol.profit = cplex.Solution.objval; 
     end
-        fprintf('\n-----------------------------------------------------------------\n');
+    fprintf('\n-----------------------------------------------------------------\n');
     fprintf ('Objective function value: %10.1f \n', sol.profit);
+
 %% Functions to determine the index of the DV based on (i,j,k)
 function out = Xindex(m,n,Nodes)
     out = (m - 1) * Nodes + n;   

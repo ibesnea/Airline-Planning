@@ -108,53 +108,53 @@ Subject To
  Transfer:                   W_6,6_0  = 0
  CapacityVerification1_1_2_: X_1,1_0 + W_1,1_0 + W_1,2_0 + W_1,3_0 + W_1,4_0
                              + W_1,5_0 + W_1,6_0 + W_2,1_0 + W_3,1_0 + W_4,1_0
-                             + W_5,1_0 + W_6,1_0 - 240 Z_1,1_1 - 160 Z_1,1_2
+                             + W_5,1_0 + W_6,1_0 + 192 Z_1,1_1 + 128 Z_1,1_2
                              <= 0
  CapacityVerification1_2_2_: X_1,2_0 + W_2,2_0 + W_3,2_0 + W_4,2_0 + W_5,2_0
-                             + W_6,2_0 - 240 Z_1,2_1 - 160 Z_1,2_2 <= 0
+                             + W_6,2_0 + 192 Z_1,2_1 + 128 Z_1,2_2 <= 0
  CapacityVerification1_3_2_: X_1,3_0 + W_2,3_0 + W_3,3_0 + W_4,3_0 + W_5,3_0
-                             + W_6,3_0 - 240 Z_1,3_1 - 160 Z_1,3_2 <= 0
+                             + W_6,3_0 + 192 Z_1,3_1 + 128 Z_1,3_2 <= 0
  CapacityVerification1_4_2_: X_1,4_0 + W_2,4_0 + W_3,4_0 + W_4,4_0 + W_5,4_0
-                             + W_6,4_0 - 240 Z_1,4_1 - 160 Z_1,4_2 <= 0
+                             + W_6,4_0 + 192 Z_1,4_1 + 128 Z_1,4_2 <= 0
  CapacityVerification1_5_2_: X_1,5_0 + W_2,5_0 + W_3,5_0 + W_4,5_0 + W_5,5_0
-                             + W_6,5_0 - 240 Z_1,5_1 - 160 Z_1,5_2 <= 0
+                             + W_6,5_0 + 192 Z_1,5_1 + 128 Z_1,5_2 <= 0
  CapacityVerification1_6_2_: X_1,6_0 + W_2,6_0 + W_3,6_0 + W_4,6_0 + W_5,6_0
-                             + W_6,6_0 - 240 Z_1,6_1 - 160 Z_1,6_2 <= 0
+                             + W_6,6_0 + 192 Z_1,6_1 + 128 Z_1,6_2 <= 0
  CapacityVerification2_1_2_: X_2,1_0 + W_2,2_0 + W_2,3_0 + W_2,4_0 + W_2,5_0
-                             + W_2,6_0 - 240 Z_2,1_1 - 160 Z_2,1_2 <= 0
- CapacityVerification2_2_2_: X_2,2_0 - 240 Z_2,2_1 - 160 Z_2,2_2 <= 0
- CapacityVerification2_3_2_: X_2,3_0 - 240 Z_2,3_1 - 160 Z_2,3_2 <= 0
- CapacityVerification2_4_2_: X_2,4_0 - 240 Z_2,4_1 - 160 Z_2,4_2 <= 0
- CapacityVerification2_5_2_: X_2,5_0 - 240 Z_2,5_1 - 160 Z_2,5_2 <= 0
- CapacityVerification2_6_2_: X_2,6_0 - 240 Z_2,6_1 - 160 Z_2,6_2 <= 0
+                             + W_2,6_0 + 192 Z_2,1_1 + 128 Z_2,1_2 <= 0
+ CapacityVerification2_2_2_: X_2,2_0 + 192 Z_2,2_1 + 128 Z_2,2_2 <= 0
+ CapacityVerification2_3_2_: X_2,3_0 + 192 Z_2,3_1 + 128 Z_2,3_2 <= 0
+ CapacityVerification2_4_2_: X_2,4_0 + 192 Z_2,4_1 + 128 Z_2,4_2 <= 0
+ CapacityVerification2_5_2_: X_2,5_0 + 192 Z_2,5_1 + 128 Z_2,5_2 <= 0
+ CapacityVerification2_6_2_: X_2,6_0 + 192 Z_2,6_1 + 128 Z_2,6_2 <= 0
  CapacityVerification3_1_2_: X_3,1_0 + W_3,2_0 + W_3,3_0 + W_3,4_0 + W_3,5_0
-                             + W_3,6_0 - 240 Z_3,1_1 - 160 Z_3,1_2 <= 0
- CapacityVerification3_2_2_: X_3,2_0 - 240 Z_3,2_1 - 160 Z_3,2_2 <= 0
- CapacityVerification3_3_2_: X_3,3_0 - 240 Z_3,3_1 - 160 Z_3,3_2 <= 0
- CapacityVerification3_4_2_: X_3,4_0 - 240 Z_3,4_1 - 160 Z_3,4_2 <= 0
- CapacityVerification3_5_2_: X_3,5_0 - 240 Z_3,5_1 - 160 Z_3,5_2 <= 0
- CapacityVerification3_6_2_: X_3,6_0 - 240 Z_3,6_1 - 160 Z_3,6_2 <= 0
+                             + W_3,6_0 + 192 Z_3,1_1 + 128 Z_3,1_2 <= 0
+ CapacityVerification3_2_2_: X_3,2_0 + 192 Z_3,2_1 + 128 Z_3,2_2 <= 0
+ CapacityVerification3_3_2_: X_3,3_0 + 192 Z_3,3_1 + 128 Z_3,3_2 <= 0
+ CapacityVerification3_4_2_: X_3,4_0 + 192 Z_3,4_1 + 128 Z_3,4_2 <= 0
+ CapacityVerification3_5_2_: X_3,5_0 + 192 Z_3,5_1 + 128 Z_3,5_2 <= 0
+ CapacityVerification3_6_2_: X_3,6_0 + 192 Z_3,6_1 + 128 Z_3,6_2 <= 0
  CapacityVerification4_1_2_: X_4,1_0 + W_4,2_0 + W_4,3_0 + W_4,4_0 + W_4,5_0
-                             + W_4,6_0 - 240 Z_4,1_1 - 160 Z_4,1_2 <= 0
- CapacityVerification4_2_2_: X_4,2_0 - 240 Z_4,2_1 - 160 Z_4,2_2 <= 0
- CapacityVerification4_3_2_: X_4,3_0 - 240 Z_4,3_1 - 160 Z_4,3_2 <= 0
- CapacityVerification4_4_2_: X_4,4_0 - 240 Z_4,4_1 - 160 Z_4,4_2 <= 0
- CapacityVerification4_5_2_: X_4,5_0 - 240 Z_4,5_1 - 160 Z_4,5_2 <= 0
- CapacityVerification4_6_2_: X_4,6_0 - 240 Z_4,6_1 - 160 Z_4,6_2 <= 0
+                             + W_4,6_0 + 192 Z_4,1_1 + 128 Z_4,1_2 <= 0
+ CapacityVerification4_2_2_: X_4,2_0 + 192 Z_4,2_1 + 128 Z_4,2_2 <= 0
+ CapacityVerification4_3_2_: X_4,3_0 + 192 Z_4,3_1 + 128 Z_4,3_2 <= 0
+ CapacityVerification4_4_2_: X_4,4_0 + 192 Z_4,4_1 + 128 Z_4,4_2 <= 0
+ CapacityVerification4_5_2_: X_4,5_0 + 192 Z_4,5_1 + 128 Z_4,5_2 <= 0
+ CapacityVerification4_6_2_: X_4,6_0 + 192 Z_4,6_1 + 128 Z_4,6_2 <= 0
  CapacityVerification5_1_2_: X_5,1_0 + W_5,2_0 + W_5,3_0 + W_5,4_0 + W_5,5_0
-                             + W_5,6_0 - 240 Z_5,1_1 - 160 Z_5,1_2 <= 0
- CapacityVerification5_2_2_: X_5,2_0 - 240 Z_5,2_1 - 160 Z_5,2_2 <= 0
- CapacityVerification5_3_2_: X_5,3_0 - 240 Z_5,3_1 - 160 Z_5,3_2 <= 0
- CapacityVerification5_4_2_: X_5,4_0 - 240 Z_5,4_1 - 160 Z_5,4_2 <= 0
- CapacityVerification5_5_2_: X_5,5_0 - 240 Z_5,5_1 - 160 Z_5,5_2 <= 0
- CapacityVerification5_6_2_: X_5,6_0 - 240 Z_5,6_1 - 160 Z_5,6_2 <= 0
+                             + W_5,6_0 + 192 Z_5,1_1 + 128 Z_5,1_2 <= 0
+ CapacityVerification5_2_2_: X_5,2_0 + 192 Z_5,2_1 + 128 Z_5,2_2 <= 0
+ CapacityVerification5_3_2_: X_5,3_0 + 192 Z_5,3_1 + 128 Z_5,3_2 <= 0
+ CapacityVerification5_4_2_: X_5,4_0 + 192 Z_5,4_1 + 128 Z_5,4_2 <= 0
+ CapacityVerification5_5_2_: X_5,5_0 + 192 Z_5,5_1 + 128 Z_5,5_2 <= 0
+ CapacityVerification5_6_2_: X_5,6_0 + 192 Z_5,6_1 + 128 Z_5,6_2 <= 0
  CapacityVerification6_1_2_: X_6,1_0 + W_6,2_0 + W_6,3_0 + W_6,4_0 + W_6,5_0
-                             + W_6,6_0 - 240 Z_6,1_1 - 160 Z_6,1_2 <= 0
- CapacityVerification6_2_2_: X_6,2_0 - 240 Z_6,2_1 - 160 Z_6,2_2 <= 0
- CapacityVerification6_3_2_: X_6,3_0 - 240 Z_6,3_1 - 160 Z_6,3_2 <= 0
- CapacityVerification6_4_2_: X_6,4_0 - 240 Z_6,4_1 - 160 Z_6,4_2 <= 0
- CapacityVerification6_5_2_: X_6,5_0 - 240 Z_6,5_1 - 160 Z_6,5_2 <= 0
- CapacityVerification6_6_2_: X_6,6_0 - 240 Z_6,6_1 - 160 Z_6,6_2 <= 0
+                             + W_6,6_0 + 192 Z_6,1_1 + 128 Z_6,1_2 <= 0
+ CapacityVerification6_2_2_: X_6,2_0 + 192 Z_6,2_1 + 128 Z_6,2_2 <= 0
+ CapacityVerification6_3_2_: X_6,3_0 + 192 Z_6,3_1 + 128 Z_6,3_2 <= 0
+ CapacityVerification6_4_2_: X_6,4_0 + 192 Z_6,4_1 + 128 Z_6,4_2 <= 0
+ CapacityVerification6_5_2_: X_6,5_0 + 192 Z_6,5_1 + 128 Z_6,5_2 <= 0
+ CapacityVerification6_6_2_: X_6,6_0 + 192 Z_6,6_1 + 128 Z_6,6_2 <= 0
  FlowBalanceNode1_1_:        - Z_1,1_1 + Z_1,2_1 + Z_1,3_1 + Z_1,4_1 + Z_1,5_1
                              + Z_1,6_1 - Z_2,1_1 - Z_3,1_1 - Z_4,1_1 - Z_5,1_1
                              - Z_6,1_1  = 0
