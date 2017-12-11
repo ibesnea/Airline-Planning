@@ -12,12 +12,10 @@
 %--------------------------------------------------------------------------
 function [d,szlat] = distance(filename)
     
-    lat  = xlsread(filename,'C6:V6')*pi/180; % Convert lat to deg;
-    long = xlsread(filename,'C7:V7')*pi/180; % Convert long to deg;
-    R_e = 6371; 
-    
-    szlat = size(lat);  % Number of airports; 
-    
+    lat  = xlsread(filename,'C6:V6')*pi/180; % Convert lat to rad;
+    long = xlsread(filename,'C7:V7')*pi/180; % Convert long to rad;
+    R_e = 6371; %km 
+    szlat = size(lat);  % Number of airports;   
     for i=1:szlat(2)   
         for j=1:szlat(2)
            d(i,j) = round(2*asin(((sin((lat(i)-lat(j)))/2)^2+ ...

@@ -4,16 +4,11 @@
     clc
     close all
 %% Input
-    [d,airports] = distance('group11.xlsx');
-    [C,Yield,actype,fleet,leasing] = opcost('group11.xlsx');
+    [C,Yield,actype,fleet,leasing,speed,nseats,tat,max_range,runway,d, ...
+                airports,q] = readdata('group11.xlsx');
     %Number of airports;
-    Nodes   = airports(2);          
-    % Aircraft Characteristics
-    [speed,nseats,tat,max_range,runway] = ...
-        accharacteristics('group11.xlsx');
-    % q_{ij} demand between airport i and j;
-    q = xlsread('group11.xlsx','C15:Z38');
-    % tat_{ij}^k turn around time for flight from aiport i to j per
+    Nodes   = airports;          
+    %tat_{ij}^k turn around time for flight from aiport i to j per
     %AC type k
     turn = TAT(actype,Nodes,tat);
     % Average load factor for European Flights
@@ -49,15 +44,15 @@
         DV                      =  Nodes*Nodes+Nodes*Nodes+...
                                    Nodes*Nodes*actype+actype;
 %% Objective Function 
-        X = Yield.*(reshape(d,Nodes*Nodes,1));% Direct Flow
-        W = Yield.*(reshape(d,Nodes*Nodes,1));% Flow from airport transfer in hub
-        Z = -reshape(C,Nodes*Nodes*actype,1);
+        X = Yield;% Direct Flow
+        W = Yield;% Flow from airport transfer in hub
+        Z = -C;
         N = -reshape(leasing,actype,1); 
         obj = [X;W;Z;N];
         lb                     =   zeros(DV,1);
         ub                     =   inf(DV,1);
         ctype                  =   char(ones(1,(DV))*('I'));
-        l = 1;        % Array with DV names
+        l = 1;                 % Array with DV names
         for i = 1:Nodes
             for j = 1:Nodes  % of the x_{ij} variables
                 NameDV(l,:)  = ['X_' num2str(i,'%02d') ',' num2str(j,'%02d') ...
@@ -92,13 +87,13 @@
           
         cplex.addCols(obj, [], lb, ub, ctype, NameDV);
 %% Constraints
-%   C1: Demand constraint    
+%   C1: Demand constraint 
     for i = 1:Nodes
         for j = 1:Nodes
             C1 = zeros(1,DV);
             C1(Xindex(i,j,Nodes))= 1;
             C1(Windex(i,j,Nodes))= 1;
-            cplex.addRows(0,C1,q(i,j),sprintf('Demand Constraint%d_%d_%d',i,j));
+            cplex.addRows(-Inf,C1,q(i,j),sprintf('Demand Constraint%d_%d_%d',i,j));
         end
     end
     
@@ -107,10 +102,11 @@
     for i = 1:Nodes
         for j = 1:Nodes
             C2 = zeros(1,DV);
-            C2(Windex(i,j,Nodes)) = 1;
+            C2(Windex(2,3,Nodes)) = 1;
             cplex.addRows(-Inf,C2,q(i,j)*g_i(i)*g_j(j),sprintf('Transfer Pax %d_%d_%d',i,j));
         end
     end
+
 %   C3: Capacity verification constraints
     for i = 1:Nodes
         for j = 1:Nodes
@@ -131,8 +127,11 @@
         for k = 1:actype
             C4 = zeros(1,DV);
             for j = 1:Nodes
-                C4(Zindex(i,j,k,Nodes)) =  1;
-                C4(Zindex(j,i,k,Nodes)) = -1;
+                C4(Zindex(2,j,1,Nodes)) =  1;
+                C4(Zindex(j,2,1,Nodes)) = -1;
+                if j==2 
+                   C4(Zindex(2,j,1,Nodes)) =  0;
+                end
             end
             cplex.addRows(0,C4,0,sprintf('FlowBalanceNode_%d_%d',i,k));
         end
@@ -146,7 +145,8 @@
                                            turn(i+(k-1)*Nodes,j));
             end
         end
-        cplex.addRows(0,C5,BT*fleet(k),sprintf('ACutilization_%d',k));
+        C5((DV-actype)+1) = -BT;
+        cplex.addRows(-Inf,C5,0,sprintf('ACutilization_%d',k));
     end
 % C6: number aircraft
     for k= 1:actype
@@ -154,7 +154,7 @@
        C6((DV-actype)+k) = 1;
        cplex.addRows(fleet(k),C6,fleet(k),sprintf('NumberofAC_%d',k));
     end
-%C7:range constraint
+% %C7:range constraint
     for k=1:actype
         for i = 1:Nodes
             for j=1:Nodes
@@ -165,13 +165,15 @@
         end
     end
 %%  Execute model
-%   Run CPLEX
+        cplex.Param.mip.limits.nodes.Cur    = 1e+8;         %max number of nodes to be visited (kind of max iterations)
+        cplex.Param.timelimit.Cur           = 120;         %max time in seconds
+ % Run CPLEX
         cplex.solve();
         cplex.writeModel([model '.lp']);
-%%  Postprocessing
+%% Postprocessing
   %Store direct results
     status                      =   cplex.Solution.status;       
-    if status == 101 || status == 102 || status == 105
+    if status == 101 || status == 102 || status == 107
         sol.profit = cplex.Solution.objval; 
     end
     fprintf('\n-----------------------------------------------------------------\n');

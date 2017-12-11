@@ -1,5 +1,4 @@
 function TURNAT = TAT(actype,Nodes,tat)
-    
     TURNAT =[];
     for k = 1:actype
         TAT_k = tat(k)*ones(Nodes,Nodes); 
