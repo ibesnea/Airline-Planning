@@ -1,9 +1,11 @@
 function a = combo(d,Nodes,actype,max_range)
-    a = [];
-    D = zeros(Nodes);
+    a = zeros(Nodes,Nodes,actype);
     for k=1:actype
-        A = d < max_range(k);
-        D(A) = 1000;
-        a = [a; D];
-    end
+       for i=1:Nodes
+           for j=1:Nodes
+                if d(i,j)<max_range(k);
+                    a(i,j,k) = 1000;
+           end
+       end
+   end
 end

@@ -5,12 +5,12 @@
     close all
 %% Input
     [C,Yield,actype,fleet,leasing,speed,nseats,tat,max_range,runway,d, ...
-                airports,q] = readdata('group11.xlsx');
+                airports,q] = read('group11.xlsx');
     %Number of airports;
     Nodes   = airports;          
     %tat_{ij}^k turn around time for flight from aiport i to j per
     %AC type k
-    turn = TAT(actype,Nodes,tat);
+    time = TAT(actype,Nodes,tat,speed,d);
     % Average load factor for European Flights
     LF= 0.75; 
     % Average utilization time for aircraft (all types)
@@ -93,7 +93,7 @@
             C1 = zeros(1,DV);
             C1(Xindex(i,j,Nodes))= 1;
             C1(Windex(i,j,Nodes))= 1;
-            cplex.addRows(-Inf,C1,q(i,j),sprintf('Demand Constraint%d_%d_%d',i,j));
+            cplex.addRows(0,C1,q(i,j),sprintf('Demand Constraint%d_%d',i,j));
         end
     end
     
@@ -102,8 +102,8 @@
     for i = 1:Nodes
         for j = 1:Nodes
             C2 = zeros(1,DV);
-            C2(Windex(2,3,Nodes)) = 1;
-            cplex.addRows(-Inf,C2,q(i,j)*g_i(i)*g_j(j),sprintf('Transfer Pax %d_%d_%d',i,j));
+            C2(Windex(i,j,Nodes)) = 1;
+            cplex.addRows(0,C2,q(i,j)*g_i(i)*g_j(j),sprintf('Transfer Pax %d_%d',i,j));
         end
     end
 
@@ -119,7 +119,7 @@
             for k = 1:actype
                 C3(Zindex(i,j,k,Nodes)) = -nseats(k)*LF;
             end
-            cplex.addRows(-Inf,C3,0,sprintf('CapacityVerification%d_%d_%d_%d',i,j));
+            cplex.addRows(-Inf,C3,0,sprintf('CapacityVerification%d_%d',i,j));
         end
     end
 %   C4: Flow balance
@@ -127,11 +127,11 @@
         for k = 1:actype
             C4 = zeros(1,DV);
             for j = 1:Nodes
-                C4(Zindex(2,j,1,Nodes)) =  1;
-                C4(Zindex(j,2,1,Nodes)) = -1;
-                if j==2 
-                   C4(Zindex(2,j,1,Nodes)) =  0;
-                end
+                C4(Zindex(i,j,k,Nodes)) =  1;
+                C4(Zindex(j,i,k,Nodes)) = -1;
+%                 if j==i 
+%                    C4(Zindex(i,j,k,Nodes)) =  0;
+%                 end
             end
             cplex.addRows(0,C4,0,sprintf('FlowBalanceNode_%d_%d',i,k));
         end
@@ -141,11 +141,10 @@
         C5 = zeros(1,DV);
         for i = 1:Nodes
             for j = 1:Nodes
-                C5(Zindex(i,j,k,Nodes)) = (d(i,j)/speed(k)+...
-                                           turn(i+(k-1)*Nodes,j));
+                C5(Zindex(i,j,k,Nodes)) = time(i,j,k);
             end
         end
-        C5((DV-actype)+1) = -BT;
+        C5((DV-actype)+k) = -BT;
         cplex.addRows(-Inf,C5,0,sprintf('ACutilization_%d',k));
     end
 % C6: number aircraft
@@ -160,22 +159,20 @@
             for j=1:Nodes
                 C7 = zeros(1,DV);
                 C7(Zindex(i,j,k,Nodes)) = 1;
-                cplex.addRows(0,C7,a(i+(k-1)*Nodes,j),sprintf('RangeConstraint_%d_%d_%d',i,j,k));
+                cplex.addRows(0,C7,a(i,j,k),sprintf('RangeConstraint_%d_%d_%d',i,j,k));
             end
         end
     end
 %%  Execute model
         cplex.Param.mip.limits.nodes.Cur    = 1e+8;         %max number of nodes to be visited (kind of max iterations)
-        cplex.Param.timelimit.Cur           = 120;         %max time in seconds
- % Run CPLEX
+        cplex.Param.timelimit.Cur           = 120;           %max time in seconds
+% Run CPLEX
         cplex.solve();
         cplex.writeModel([model '.lp']);
-%% Postprocessing
-  %Store direct results
+% Postprocessing
+%  Store direct results
     status                      =   cplex.Solution.status;       
-    if status == 101 || status == 102 || status == 107
-        sol.profit = cplex.Solution.objval; 
-    end
+    sol.profit = cplex.Solution.objval; 
     fprintf('\n-----------------------------------------------------------------\n');
     fprintf ('Objective function value: %10.1f \n', sol.profit);
 
