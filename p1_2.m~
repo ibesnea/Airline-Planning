@@ -53,7 +53,9 @@
         obj = [X;W;Z;N;P];
         lb                     =   zeros(DV,1);
         ub                     =   inf(DV,1);
-        ctype                  =   char(ones(1,(DV))*('I'));
+        s1                 =   char(ones(1,(DV-npso))*('I'));
+        s2                 =   char(ones(1,npso)*('B'));
+        cytpe              =   strcat(s1,s2);
         l = 1;                 % Array with DV names
         for i = 1:Nodes
             for j = 1:Nodes  % of the x_{ij} variables
@@ -165,6 +167,17 @@
 %             end
 %         end
 %     end
+    %C8: PSO: going there.  
+    i = 1;
+    for j = 17:20
+         pso = 1;
+         C8 = zeros(1,DV); 
+         for k = 1:actype
+            C8(Zindex(i,j,k,Nodes)) = nseats(k); 
+         end
+         C8((DV-npso)+pso) = -200; 
+         %cplex.addRows(0,C7,a(i,j,k),sprintf('PSO2_%d_%d_%d',i,j,k));   
+    end
 % %%  Execute model
 %         cplex.Param.mip.limits.nodes.Cur    = 1e+8;         %max number of nodes to be visited (kind of max iterations)
 %         cplex.Param.timelimit.Cur           = 120;           %max time in seconds
@@ -178,16 +191,16 @@
 %     fprintf('\n-----------------------------------------------------------------\n');
 %     fprintf ('Objective function value: %10.1f \n', sol.profit);
 % 
-% %% Functions to determine the index of the DV based on (i,j,k)
-% function out = Xindex(m,n,Nodes)
-%     out = (m - 1) * Nodes + n;   
-% end
-% function out = Windex(m,n,Nodes)
-%     out = Nodes*Nodes + (m - 1) * Nodes + n;   
-% end
-% function out = Zindex(m,n,p,Nodes)
-%     out = Nodes*Nodes*2 + (m - 1) * Nodes + n + Nodes*Nodes*(p-1);   
-% end
+%% Functions to determine the index of the DV based on (i,j,k)
+function out = Xindex(m,n,Nodes)
+    out = (m - 1) * Nodes + n;   
+end
+function out = Windex(m,n,Nodes)
+    out = Nodes*Nodes + (m - 1) * Nodes + n;   
+end
+function out = Zindex(m,n,p,Nodes)
+    out = Nodes*Nodes*2 + (m - 1) * Nodes + n + Nodes*Nodes*(p-1);   
+end
 
     
     
