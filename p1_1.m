@@ -36,7 +36,7 @@
     end
 %% Initiate CPLEX Model
 %   Create model
-        model                   =   'Problem1_Model';
+        model                   =   'Problem1_1';
         cplex                   =   Cplex(model);
         cplex.Model.sense       =   'maximize'; 
 
