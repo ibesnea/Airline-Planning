@@ -5,6 +5,9 @@ function a = combo(d,Nodes,actype,max_range)
            for j=1:Nodes
                 if d(i,j)<max_range(k);
                     a(i,j,k) = 1000;
+                if j ==i
+                    a(i,j,k) = 0;
+                end
            end
        end
    end

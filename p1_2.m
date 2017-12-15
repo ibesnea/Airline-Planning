@@ -7,7 +7,8 @@
     [C,Yield,actype,fleet,leasing,speed,nseats,tat,max_range,runway,d, ...
                 airports,q] = read('group11.xlsx');
     %Number of airports;
-    Nodes   = airports;          
+    Nodes   = airports;   
+    npso    = 4; 
     %tat_{ij}^k turn around time for flight from aiport i to j per
     %AC type k
     time = TAT(actype,Nodes,tat,speed,d);
@@ -17,8 +18,6 @@
     BT= 70;   
     % Range matrix of possible combos
     a = combo(d,Nodes,actype,max_range);
-%%  PSO 
-    npso = 4; 
 %% Parameters 
     % g_h = 0 if a hub is located at airport h; 1 otherwise
     for i = 1 : Nodes
@@ -44,18 +43,18 @@
 %   Decision variable
         DV                      =  Nodes*Nodes+Nodes*Nodes+...
                                    Nodes*Nodes*actype+actype+npso;
-%% Objective Function 
+    %% Objective Function 
         X = Yield;% Direct Flow
         W = Yield;% Flow from airport transfer in hub
         Z = -C;
         N = -reshape(leasing,actype,1); 
-        P = 15000*ones(4,1); 
+        P = 15000*ones(npso,1); 
         obj = [X;W;Z;N;P];
         lb                     =   zeros(DV,1);
-        ub                     =   [inf((DV-npso),1); ones(npso,1)];
-        s1                 =   char(ones(1,(DV-npso))*('I'));
-        s2                 =   char(ones(1,npso)*('B'));
-        ctype              =   strcat(s1,s2);
+        ub                     =   inf((DV),1);
+        s1                =   char(ones(1,(DV-npso))*('I'));
+        s2                   =   char(ones(1,npso)*('B'));
+        ctype              =   strcat(s1,s2)
         l = 1;                 % Array with DV names
         for i = 1:Nodes
             for j = 1:Nodes  % of the x_{ij} variables
@@ -87,9 +86,9 @@
                                 '_' num2str(k)];
             l = l + 1;
         end
-        for k =1:npso  
+        for n =1:npso  
             NameDV(l,:)  = ['P_' num2str(0,'%02d') ',' num2str(0,'%02d') ...
-                                '_' num2str(k)];
+                                '_' num2str(n)];
             l = l + 1;
         end  
           
@@ -137,9 +136,9 @@
             for j = 1:Nodes
                 C4(Zindex(i,j,k,Nodes)) =  1;
                 C4(Zindex(j,i,k,Nodes)) = -1;
-%                 if j==i 
-%                    C4(Zindex(i,j,k,Nodes)) =  0;
-%                 end
+                if j==i 
+                   C4(Zindex(i,j,k,Nodes)) =  0;
+                end
             end
             cplex.addRows(0,C4,0,sprintf('FlowBalanceNode_%d_%d',i,k));
         end
@@ -152,13 +151,13 @@
                 C5(Zindex(i,j,k,Nodes)) = time(i,j,k);
             end
         end
-        C5((DV-actype)+k) = -BT;
+        C5((DV-actype-npso)+k) = -BT;
         cplex.addRows(-Inf,C5,0,sprintf('ACutilization_%d',k));
     end
 % C6: number aircraft
     for k= 1:actype
        C6 = zeros(1,DV);
-       C6((DV-actype)+k) = 1;
+       C6((DV-actype-npso)+k) = 1;
        cplex.addRows(fleet(k),C6,fleet(k),sprintf('NumberofAC_%d',k));
     end
 % %C7:range constraint
@@ -171,10 +170,11 @@
             end
         end
     end
-    %C8: PSO: going there.  
-    i = 1;
-    pso = 1;
-    for j = 17:20
+    %C8: PSO: going there.
+    j=1; 
+    pso = 0;
+    for i = 17:20
+         pso = pso+1;
          C8 = zeros(1,DV); 
          for k = 1:actype
             C8(Zindex(i,j,k,Nodes)) = nseats(k);
@@ -182,21 +182,21 @@
          end
          C8((DV-npso)+pso) = -200; 
          cplex.addRows(0,C8,Inf,sprintf('PSO_%d_%d_%d',i,j,pso)); 
-         pso=pso+1;
     end
  
-%%  Execute model
-        cplex.Param.mip.limits.nodes.Cur    = 1e+8;         %max number of nodes to be visited (kind of max iterations)
-        cplex.Param.timelimit.Cur           = 120;           %max time in seconds
-% Run CPLEX
-        cplex.solve();
-        cplex.writeModel([model '.lp']);
-% Postprocessing
-%  Store direct results
-    status                      =   cplex.Solution.status;       
-    sol.profit = cplex.Solution.objval; 
-    fprintf('\n-----------------------------------------------------------------\n');
-    fprintf ('Objective function value: %10.1f \n', sol.profit);
+    %%  Execute model
+            cplex.Param.mip.limits.nodes.Cur    = 1e+8;         %max number of nodes to be visited (kind of max iterations)
+            cplex.Param.timelimit.Cur           = 120;           %max time in seconds
+    %Run CPLEX
+            cplex.solve();
+            cplex.writeModel([model '.lp']);
+              
+    %% Postprocessing
+     % Store direct results
+        status                      =   cplex.Solution.status;       
+        sol.profit = cplex.Solution.objval; 
+        fprintf('\n-----------------------------------------------------------------\n');
+        fprintf ('Objective function value: %10.1f \n', sol.profit);
 
 %% Functions to determine the index of the DV based on (i,j,k)
 function out = Xindex(m,n,Nodes)
@@ -210,6 +210,6 @@ function out = Zindex(m,n,p,Nodes)
 end
 
     
-    
+%     
 
  
