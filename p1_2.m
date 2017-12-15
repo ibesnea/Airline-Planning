@@ -5,7 +5,7 @@
     close all
 %% Input
     [C,Yield,actype,fleet,leasing,speed,nseats,tat,max_range,runway,d, ...
-                airports,q] = read('group11.xlsx');
+                airports,q] = read_1('group11.xlsx');
     %Number of airports;
     Nodes   = airports;   
     npso    = 4; 
