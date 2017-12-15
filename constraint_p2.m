@@ -1,4 +1,19 @@
-%% Additional parameter for C9
+%%    % Average load factor for European Flights and US Flights
+    for i = 1:20
+        for j = 1:20
+            LF(i,j) = 0.75;
+        end
+        for j = 21:24
+            LF(i,j) = 0.85;
+        end
+    end
+
+    for i = 21:24
+        for j = 1:24
+        LF(i,j) = 0.85;
+        end
+    end
+    %% Additional parameter for C9
 
     % b_h = 1 for the hub; -1 for the non-hub EU airport; 0 for US airport
     for i = 1                   %hub
@@ -52,7 +67,7 @@
                 C3(Windex(m,j,Nodes))= (1-g_i(i));
             end
             for k = 1:actype
-                C3(Zindex(i,j,k,Nodes)) = -nseats(k)*LF;
+                C3(Zindex(i,j,k,Nodes)) = -nseats(k)*LF(i,j);           %change the LF(different for US
             end
             cplex.addRows(-Inf,C3,0,sprintf('CapacityVerification%d_%d',i,j));
         end
@@ -143,4 +158,3 @@
             cplex.addRows(0,C11,0,sprintf('AClimit%d_%d',k));
         end
     end
-  
