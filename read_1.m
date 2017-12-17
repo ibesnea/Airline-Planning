@@ -8,6 +8,7 @@
 function [c,yield,types,fleet,c_l,V,seats,tat,range,runway,d, ...
                 airports,q]=read_1(filename)
     %%  Determine the types of aircraft in fleet.
+    filename = 'group11.xlsx'
     lat  = xlsread(filename,11,'C6:V6')*pi/180; % Convert lat to rad;
     long = xlsread(filename,11,'C7:V7')*pi/180; % Convert long to rad;
     R_e = 6371; %km 

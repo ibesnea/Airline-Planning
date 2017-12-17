@@ -3,13 +3,14 @@ function totaltime = TAT(actype,Nodes,tat,speed,d)
    for k=1:actype
         TURNAT(:,:,k) = tat(k);
    end
+   hub =1; 
    for i= 1:Nodes
        for j=1:Nodes
            
-           if i == 3
+           if i == hub
                TURNAT(i,j,:) = 1;
            end
-           if j == 3 
+           if j == hub 
                TURNAT(i,j,:) = TURNAT(i,j,:)*2;
            end
            if i == j
