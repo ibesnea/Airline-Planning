@@ -13410,6 +13410,11 @@ Subject To
  NumberofAC_3:              T_00,00_3#4048 - RgNumberofAC_3  = 0
  NumberofAC_4:              T_00,00_4#4049  = 0
  NumberofAC_5:              T_00,00_5#4050  = 0
+ NumberofAC_1:              _E_00,00_1#4041 >= 2
+ NumberofAC_2:              _E_00,00_2#4042 >= 1
+ NumberofAC_3:              _E_00,00_3#4043 >= 2
+ NumberofAC_4:              _E_00,00_4#4044 >= 0
+ NumberofAC_5:              _E_00,00_5#4045 >= 0
 Bounds
       X_01,01_0#0 >= 0
       X_01,02_0#1 >= 0

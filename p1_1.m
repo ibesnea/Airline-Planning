@@ -1,4 +1,5 @@
 %% Initialization
+    addpath('/Users/Claudia/Applications/IBM/ILOG/CPLEX_Studio1271')
     addpath('/Users/Claudia/Documents/MSc-1/Q2/AE4423/Airline-Planning')
     clearvars
     clc
@@ -49,14 +50,14 @@
         for i = 1:Nodes
             for j = 1:Nodes  % of the x_{ij} variables
                 NameDV(l,:)  = ['X_' num2str(i,'%02d') ',' num2str(j,'%02d') ...
-                                '_' num2str(0)];
+                                ',' num2str(0)];
                 l = l + 1;
             end
         end
         for i = 1:Nodes
             for j = 1:Nodes  % of the x_{ij} variables
                 NameDV(l,:)  = ['W_' num2str(i,'%02d') ',' num2str(j,'%02d') ...
-                                '_' num2str(0)];
+                                ',' num2str(0)];
                 l = l + 1;
             end
         end
@@ -65,15 +66,14 @@
             for i = 1:Nodes
                 for j = 1:Nodes % of the z_{ij}_k variables
                     NameDV(l,:)  = ['Z_' num2str(i,'%02d') ',' num2str(j,'%02d') ...
-                                '_' num2str(k)];
+                                ',' num2str(k)];
                     l = l + 1;
                 end
             end
         end
         
         for k =1:actype  % of the z_{ij}_k variables
-            NameDV(l,:)  = ['N_' num2str(0,'%02d') ',' num2str(0,'%02d') ...
-                                '_' num2str(k)];
+            NameDV(l,:)  = ['N_00,00,' num2str(k)];
             l = l + 1;
         end
           
@@ -86,7 +86,7 @@
             C1 = zeros(1,DV);
             C1(Xindex(i,j,Nodes))= 1;
             C1(Windex(i,j,Nodes))= 1;
-            cplex.addRows(0,C1,q(i,j),sprintf('Demand Constraint%d_%d',i,j));
+            cplex.addRows(-Inf,C1,q(i,j),sprintf('Demand Constraint%d_%d',i,j));
         end
     end
     
@@ -122,11 +122,11 @@
             for j = 1:Nodes
                 C4(Zindex(i,j,k,Nodes)) =  1;
                 C4(Zindex(j,i,k,Nodes)) = -1;
-                if j==i 
-                   C4(Zindex(i,j,k,Nodes)) =  0;
-                end
+%                 if j==i 
+%                    C4(Zindex(i,j,k,Nodes)) =  0;
+%                 end
             end
-            cplex.addRows(0,C4,0,sprintf('FlowBalanceNode_%d_%d',i,k));
+            cplex.addRows(0,C4,0,sprintf('FlowBalanceNode%d_%d',i,k));
         end
     end
 %   C5: Aircraft utilization
@@ -138,21 +138,21 @@
             end
         end
         C5(Nindex(k,actype,Nodes)) = -BT;
-        cplex.addRows(-Inf,C5,0,sprintf('ACutilization_%d',k));
+        cplex.addRows(-Inf,C5,0,sprintf('ACutilization%d',k));
     end
 % C6: Number aircraft
     for k= 1:actype
        C6 = zeros(1,DV);
        C6(Nindex(k,actype,Nodes)) = 1;
-       cplex.addRows(fleet(k),C6,fleet(k),sprintf('NumberofAC_%d',k));
+       cplex.addRows(fleet(k),C6,fleet(k),sprintf('NumberofAC%d',k));
     end
-% %C7:Range constraint+ Runway onstraint
+% %C7:Range constraint+Runway onstraint
     for k=1:actype
         for i = 1:Nodes
             for j=1:Nodes
                 C7 = zeros(1,DV);
                 C7(Zindex(i,j,k,Nodes)) = 1;
-                cplex.addRows(0,C7,a(i,j,k),sprintf('RangeConstraint_%d_%d_%d',i,j,k));
+                cplex.addRows(0,C7,a(i,j,k),sprintf('RangeConstraint%d_%d_%d',i,j,k));
             end
         end
     end
@@ -169,20 +169,32 @@
     fprintf('\n-----------------------------------------------------------------\n');
     fprintf ('Objective function value: %10.1f \n', sol.profit);
 %  Store results in Excel
-%     x_ij    = cplex.Solution.x(1,1:Nodes*Nodes);
-%     w_ij    = cplex.Solution.x(1,Nodes*Nodes+1:Nodes*Nodes*2);
-%     z_ij_k  = cplex.Solution.x(1,Nodes*Nodes*2+1:Nodes*Nodes*(actype+2))
-    %xlswrite('solution.xlsx'
-
+     dv    = cplex.Solution.x;
+     x_ij = dv(1:Nodes*Nodes,1);
+     x_ij = transpose(reshape(x_ij,Nodes,Nodes));
+     w_ij = dv((Nodes*Nodes+1):Nodes*Nodes*2,1); 
+     w_ij = transpose(reshape(w_ij,Nodes,Nodes));
+     z_ij_k = dv(Nodes*Nodes*2+1:Nodes*Nodes*(actype+2),1);
+     z      = zeros(Nodes,Nodes,actype);
+     for k=1:actype
+         z_ij = transpose(reshape(z_ij_k(Nodes*Nodes*(k-1)+1:Nodes*Nodes*k),Nodes,Nodes));
+         z(:,:,k) = z_ij; 
+     end
+     n_k    = dv(Nodes*Nodes*(actype+2)+1:DV);
+     xlswrite('solution.xlsx',sol.profit,1,'B1');
+     xlswrite('solution.xlsx',n_k,1,'B2:F5');
+     xlswrite('solution.xlsx',x_ij,1,'B4:U23');
+     xlswrite('solution.xlsx',w_ij,1,'B25:U44');
+     xlswrite('solution.xlsx',z(:,:,1),2,'B4:U23');
+     xlswrite('solution.xlsx',z(:,:,2),2,'B25:U44');
+     xlswrite('solution.xlsx',z(:,:,3),2,'B46:U65');
 %% Functions to determine the index of the DV based on (i,j,k)
 function out = Xindex(m,n,Nodes)
     out = (m - 1) * Nodes + n;   
 end
-
 function out = Windex(m,n,Nodes)
     out = Nodes*Nodes + (m - 1) * Nodes + n;   
 end
-
 function out = Zindex(m,n,p,Nodes)
     out = Nodes*Nodes*2 + (m - 1) * Nodes + n + Nodes*Nodes*(p-1);   
 end

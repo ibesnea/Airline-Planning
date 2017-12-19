@@ -242,6 +242,11 @@
        C11(Termindex(k,actype,Nodes)) =1;
        cplex.addRows(0,C11,fleet(k),sprintf('NumberofAC_%d',k));
     end
+    for k= 1:actype
+       C11 = zeros(1,DV);
+       C11(Newindex(k,actype,Nodes)) =1;
+       cplex.addRows(fleet(k),C11,Inf,sprintf('NumberofAC_%d',k));
+    end
     %%  Execute model
             cplex.Param.mip.limits.nodes.Cur    = 1e+8;         %max number of nodes to be visited (kind of max iterations)
             cplex.Param.timelimit.Cur           = 10;           %max time in seconds
