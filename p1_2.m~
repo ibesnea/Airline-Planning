@@ -145,13 +145,13 @@
                 C5(Zindex(i,j,k,Nodes)) = time(i,j,k);
             end
         end
-        C5(Nindex(k,actype,Nodes)) = -BT;
+        C5((DV-actype-npso)+k) = -BT;
         cplex.addRows(-Inf,C5,0,sprintf('ACutilization_%d',k));
     end
 % C6: number aircraft
     for k= 1:actype
        C6 = zeros(1,DV);
-       C6(Nindex(k,actype,Nodes)) = 1;
+       C6((DV-actype-npso)+k) = 1;
        cplex.addRows(fleet(k),C6,fleet(k),sprintf('NumberofAC_%d',k));
     end
 % %C7:range constraint
@@ -173,7 +173,7 @@
             C8(Zindex(i,hub,k,Nodes)) = nseats(k);
             C8(Zindex(hub,i,k,Nodes)) = nseats(k);
          end
-         C8(PSOindex(pso,actype,Nodes)) = -200; 
+         C8(PSO(pso,actype,Nodes) = -200; 
          cplex.addRows(0,C8,Inf,sprintf('PSO_%d',i,pso)); 
     end
  

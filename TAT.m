@@ -1,4 +1,4 @@
-function totaltime = TAT(actype,Nodes,tat,speed,d)
+    function totaltime = TAT(actype,Nodes,tat,speed,d)
    TURNAT = zeros(Nodes,Nodes,actype);
    for k=1:actype
         TURNAT(:,:,k) = tat(k);
@@ -6,15 +6,16 @@ function totaltime = TAT(actype,Nodes,tat,speed,d)
    hub =1; 
    for i= 1:Nodes
        for j=1:Nodes
-           
-           if i == hub
-               TURNAT(i,j,:) = 1;
-           end
            if j == hub 
                TURNAT(i,j,:) = TURNAT(i,j,:)*2;
            end
+           if i == hub || j ==hub
+               if TURNAT(i,j,:) < 1
+                   TURNAT(i,j) = 1;
+               end
+           end
            if i == j
-              TURNAT(i,j,:) =0;
+              TURNAT(i,j,:) = 0;
            end
        end
    end

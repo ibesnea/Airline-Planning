@@ -5,7 +5,7 @@
     close all
 %% Input
     [C,Yield,actype,fleet,leasing,speed,nseats,tat,max_range,runway,d, ...
-                airports,q] = read_1('group11.xlsx');
+                airports,q,nrunway] = read_1('group11.xlsx');
     %Number of airports;
     Nodes   = airports;          
     %tat_{ij}^k turn around time for flight from aiport i to j per
@@ -17,23 +17,16 @@
     BT= 70;   
     % Range matrix of possible combos
     a = combo(d,Nodes,actype,max_range);
-    
+    b = comborunway(Nodes,actype,runway,nrunway);
+    indx_b = b==0;
+    a(indx_b) = 0;
 %% Parameters 
     % g_h = 0 if a hub is located at airport h; 1 otherwise
-    for i = 1 : Nodes
-        if i == 1
-           g_i(i) = 0;
-        else
-           g_i(i) = 1;
-        end
-    end
-    for j = 1 : Nodes
-        if j == 1
-           g_j(j) = 0;
-        else
-           g_j(j) = 1;
-        end
-    end
+    hub = 1; 
+    g_i = ones(1,Nodes);
+    g_j = ones(1,Nodes);
+    g_i(hub) =0;
+    g_j(hub) =0;
 %% Initiate CPLEX Model
 %   Create model
         model                   =   'Problem1_1';
@@ -103,7 +96,7 @@
         for j = 1:Nodes
             C2 = zeros(1,DV);
             C2(Windex(i,j,Nodes)) = 1;
-            cplex.addRows(0,C2,q(i,j)*g_i(i)*g_j(j),sprintf('Transfer Pax %d_%d',i,j));
+            cplex.addRows(0,C2,q(i,j)*g_i(i)*g_j(j),sprintf('TransferPax%d_%d',i,j));
         end
     end
 
@@ -129,9 +122,9 @@
             for j = 1:Nodes
                 C4(Zindex(i,j,k,Nodes)) =  1;
                 C4(Zindex(j,i,k,Nodes)) = -1;
-%                 if j==i 
-%                    C4(Zindex(i,j,k,Nodes)) =  0;
-%                 end
+                if j==i 
+                   C4(Zindex(i,j,k,Nodes)) =  0;
+                end
             end
             cplex.addRows(0,C4,0,sprintf('FlowBalanceNode_%d_%d',i,k));
         end
@@ -144,16 +137,16 @@
                 C5(Zindex(i,j,k,Nodes)) = time(i,j,k);
             end
         end
-        C5((DV-actype)+k) = -BT;
+        C5(Nindex(k,actype,Nodes)) = -BT;
         cplex.addRows(-Inf,C5,0,sprintf('ACutilization_%d',k));
     end
-% C6: number aircraft
+% C6: Number aircraft
     for k= 1:actype
        C6 = zeros(1,DV);
-       C6((DV-actype)+k) = 1;
+       C6(Nindex(k,actype,Nodes)) = 1;
        cplex.addRows(fleet(k),C6,fleet(k),sprintf('NumberofAC_%d',k));
     end
-% %C7:range constraint
+% %C7:Range constraint+ Runway onstraint
     for k=1:actype
         for i = 1:Nodes
             for j=1:Nodes
@@ -165,28 +158,38 @@
     end
 %%  Execute model
         cplex.Param.mip.limits.nodes.Cur    = 1e+8;         %max number of nodes to be visited (kind of max iterations)
-        cplex.Param.timelimit.Cur           = 120;           %max time in seconds
+        cplex.Param.timelimit.Cur           = 10;           %max time in seconds
 % Run CPLEX
         cplex.solve();
         cplex.writeModel([model '.lp']);
-% Postprocessing
+%% Postprocessing
 %  Store direct results
     status                      =   cplex.Solution.status;       
     sol.profit = cplex.Solution.objval; 
     fprintf('\n-----------------------------------------------------------------\n');
     fprintf ('Objective function value: %10.1f \n', sol.profit);
+%  Store results in Excel
+%     x_ij    = cplex.Solution.x(1,1:Nodes*Nodes);
+%     w_ij    = cplex.Solution.x(1,Nodes*Nodes+1:Nodes*Nodes*2);
+%     z_ij_k  = cplex.Solution.x(1,Nodes*Nodes*2+1:Nodes*Nodes*(actype+2))
+    %xlswrite('solution.xlsx'
 
 %% Functions to determine the index of the DV based on (i,j,k)
 function out = Xindex(m,n,Nodes)
     out = (m - 1) * Nodes + n;   
 end
+
 function out = Windex(m,n,Nodes)
     out = Nodes*Nodes + (m - 1) * Nodes + n;   
 end
+
 function out = Zindex(m,n,p,Nodes)
     out = Nodes*Nodes*2 + (m - 1) * Nodes + n + Nodes*Nodes*(p-1);   
 end
 
+function out = Nindex(p,actype,Nodes)
+    out =  Nodes*Nodes*(actype+2)+p;
+end
     
     
 

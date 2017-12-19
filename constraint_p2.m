@@ -103,7 +103,7 @@
        C6((DV-actype-npso)+k) = 1;
        cplex.addRows(0,C6,Inf,sprintf('NumberofAC_%d',k));          %n(k) can be unlimited
     end
-% %C7:range and runway constraint
+% %C7: Range and runway constraint
     for k=1:actype
         for i = 1:Nodes
             for j=1:Nodes
