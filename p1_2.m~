@@ -202,7 +202,7 @@
          z(:,:,k) = z_ij; 
      end
      n_k    = transpose(dv(Nodes*Nodes*(actype+2)+1:Nodes*Nodes*(actype+2)+actype));
-     pso    = transpose(dv(Nodes*Nodes*(actype+2)+actype+1:DV));
+     pso    
      
      xlswrite('solution.xlsx',sol.profit,1,'B1');
      xlswrite('solution.xlsx',n_k,1,'B2:D2');
@@ -211,7 +211,6 @@
      xlswrite('solution.xlsx',z(:,:,1),2,'B4:U23');
      xlswrite('solution.xlsx',z(:,:,2),2,'B25:U44');
      xlswrite('solution.xlsx',z(:,:,3),2,'B46:U65');
-     xlswrite('solution.xlsx',pso,2,'B2:E2');
 %% Functions to determine the index of the DV based on (i,j,k)
 function out = Xindex(m,n,Nodes)
     out = (m - 1) * Nodes + n;   
