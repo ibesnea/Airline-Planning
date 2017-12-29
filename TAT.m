@@ -9,9 +9,9 @@
            if j == hub 
                TURNAT(i,j,:) = TURNAT(i,j,:)*2;
            end
-           if i == hub || j ==hub
+           if j ==hub
                if TURNAT(i,j,:) < 1
-                   TURNAT(i,j) = 1;
+                   TURNAT(i,j,:) = 1;
                end
            end
            if i == j

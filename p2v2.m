@@ -29,6 +29,10 @@
     indx_c = c==0;
     a(indx_b) = 0;
     a(indx_c) = 0;
+    fileID      = fopen('original.txt','w');
+    formatSpec  = '%f\n';
+    fprintf(fileID,formatSpec,d);  
+    fclose(fileID);
 %% Parameters 
     % g_h = 0 if a hub is located at airport h; 1 otherwise
     hub = 1; 
@@ -213,10 +217,10 @@
             C8(Zindex(i,hub,k,Nodes)) = nseats(k);
             C8(Zindex(hub,i,k,Nodes)) = nseats(k);
          end
-         C8(PSOindex(pso,actype,Nodes)) = -200; 
+         C8(PSOindex(pso,actype,Nodes)) = -400; 
          cplex.addRows(0,C8,Inf,sprintf('PSO_%d',i,pso)); 
     end
- 
+
     %C9: ASAs
     for i = 1:Nodes
         for j = 1:Nodes
@@ -231,9 +235,16 @@
          C10 = zeros(1,DV); 
          for k = 1:actype
             C10(Zindex(i,hub,k,Nodes)) = nseats(k);
-            C10(Zindex(hub,i,k,Nodes)) = nseats(k);
          end
          cplex.addRows(0,C10,7500,sprintf('MaximumUSseats%d_%d_%d',i,j)); 
+    end    
+    
+    for i = 21:24
+         C12 = zeros(1,DV); 
+         for k = 1:actype
+            C12(Zindex(hub,i,k,Nodes)) = nseats(k);
+         end
+         cplex.addRows(0,C12,7500,sprintf('MaximumUSseats%d_%d_%d',i,j)); 
     end    
     
     % C11: 

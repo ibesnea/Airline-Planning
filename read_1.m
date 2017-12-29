@@ -5,9 +5,10 @@
 %     C= Total Cost;
 %     Yield = Yield for flight from airport i to j; 
 %------------------------------------------------------------------------
-function [c,yield,types,fleet,c_l,V,seats,tat,range,runway,d, ...
-                airports,q,arunway]=read_1(filename)
+ function [c,yield,types,fleet,c_l,V,seats,tat,range,runway,d, ...
+                 airports,q,arunway]=read_1(filename)
     %%  Determine the types of aircraft in fleet.
+    filename = 'group11.xlsx'
     lat  = xlsread(filename,11,'C6:V6')*pi/180; % Convert lat to rad;
     long = xlsread(filename,11,'C7:V7')*pi/180; % Convert long to rad;
     R_e = 6371; %km 
@@ -15,11 +16,11 @@ function [c,yield,types,fleet,c_l,V,seats,tat,range,runway,d, ...
     airports = size(lat);    
     airports = airports(2); % Number of airports;
     
+    d = zeros(airports,airports);
     for i=1:airports   
         for j=1:airports
-           d(i,j) = 2*asin(((sin((lat(i)-lat(j)))/2)^2+ ...
-                    cos(lat(i))*cos(lat(j)) * ...
-                    (sin((long(i))-long(j))/2)^2)^0.5)*R_e;
+           d(i,j) = R_e*2*asin(((sin((lat(i)-lat(j))/2))^2+cos(lat(i))* ... 
+                    cos(lat(j))*(sin((long(i)-long(j))/2))^2)^(0.5));
         end
     end
     %%  Fleet Size 
@@ -63,31 +64,30 @@ function [c,yield,types,fleet,c_l,V,seats,tat,range,runway,d, ...
         end
     end
     
+    hub   = 1;
     for k = 1:types
         for j = 1:airports
-            totalcost(1,j,k) = totalcost(1,j,k) * 0.7;
-        end
-        for i = 1:airports
-            totalcost(i,1,k) = totalcost(i,1,k) * 0.7;
+            totalcost(hub,j,k) = totalcost(hub,j,k) * 0.7;
+            totalcost(j,hub,k) = totalcost(j,hub,k) * 0.7;
         end
     end
-    
+   c = zeros(airports,airports,types);
     for k= 1:types
         c(:,:,k) = transpose(totalcost(:,:,k));
     end
-    c   = reshape(c,airports*airports*types,1);
+   c   = reshape(c,airports*airports*types,1);
     
       %% Yield for each x_ij and w_ij
-    yield = [];
+    y = zeros(airports,airports);
     for i = 1:airports
         for j =1: airports
-            y = (5.9*d(i,j)^(-0.76)+0.043)*d(i,j);
-            if isnan(y)
-                y=0;
+            y(i,j) = (5.9*d(i,j)^(-0.76)+0.043)*d(i,j);
+            if isnan(y(i,j))
+                y(i,j)=0;
             end
-            yield = [ yield ; y]; %Euros/pax
         end
     end
+    yield = reshape(y,airports*airports,1);
 end
 %% Spyros Cost Calculation
 % fixedcost_ac1 = c_f(1)*ones(airports,airports);

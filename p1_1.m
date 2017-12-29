@@ -1,5 +1,4 @@
 %% Initialization
-    addpath('/Users/Claudia/Applications/IBM/ILOG/CPLEX_Studio1271')
     addpath('/Users/Claudia/Documents/MSc-1/Q2/AE4423/Airline-Planning')
     clearvars
     clc
@@ -21,6 +20,9 @@
     b = comborunway(Nodes,actype,runway,nrunway);
     indx_b = b==0;
     a(indx_b) = 0;
+    fileID = fopen('original.txt','w');
+    fprintf(fileID,'%f\n',time);
+    fclose(fileID);
 %% Parameters 
     % g_h = 0 if a hub is located at airport h; 1 otherwise
     hub = 1; 
@@ -86,7 +88,7 @@
             C1 = zeros(1,DV);
             C1(Xindex(i,j,Nodes))= 1;
             C1(Windex(i,j,Nodes))= 1;
-            cplex.addRows(-Inf,C1,q(i,j),sprintf('Demand Constraint%d_%d',i,j));
+            cplex.addRows(0,C1,q(i,j),sprintf('Demand Constraint%d_%d',i,j));
         end
     end
     
@@ -122,9 +124,6 @@
             for j = 1:Nodes
                 C4(Zindex(i,j,k,Nodes)) =  1;
                 C4(Zindex(j,i,k,Nodes)) = -1;
-%                 if j==i 
-%                    C4(Zindex(i,j,k,Nodes)) =  0;
-%                 end
             end
             cplex.addRows(0,C4,0,sprintf('FlowBalanceNode%d_%d',i,k));
         end
@@ -181,13 +180,6 @@
          z(:,:,k) = z_ij; 
      end
      n_k    = dv(Nodes*Nodes*(actype+2)+1:DV);
-     xlswrite('solution.xlsx',sol.profit,1,'B1');
-     xlswrite('solution.xlsx',n_k,1,'B2:F5');
-     xlswrite('solution.xlsx',x_ij,1,'B4:U23');
-     xlswrite('solution.xlsx',w_ij,1,'B25:U44');
-     xlswrite('solution.xlsx',z(:,:,1),2,'B4:U23');
-     xlswrite('solution.xlsx',z(:,:,2),2,'B25:U44');
-     xlswrite('solution.xlsx',z(:,:,3),2,'B46:U65');
 %% Functions to determine the index of the DV based on (i,j,k)
 function out = Xindex(m,n,Nodes)
     out = (m - 1) * Nodes + n;   

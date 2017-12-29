@@ -154,6 +154,7 @@
        C6(Nindex(k,actype,Nodes)) = 1;
        cplex.addRows(fleet(k),C6,fleet(k),sprintf('NumberofAC_%d',k));
     end
+    
 % %C7:range constraint
     for k=1:actype
         for i = 1:Nodes
@@ -164,19 +165,28 @@
             end
         end
     end
-    %C8: PSO: going there.
+    %C8: PSO: going back.
     pso = 0;
     for i = 17:20
          pso = pso+1;
          C8 = zeros(1,DV); 
          for k = 1:actype
             C8(Zindex(i,hub,k,Nodes)) = nseats(k);
-            C8(Zindex(hub,i,k,Nodes)) = nseats(k);
          end
          C8(PSOindex(pso,actype,Nodes)) = -200; 
          cplex.addRows(0,C8,Inf,sprintf('PSO_%d',i,pso)); 
     end
- 
+    %C9: PSO: going there.
+    pso =0;
+    for j = 17:20
+         pso = pso+1;
+         C9 = zeros(1,DV); 
+         for k = 1:actype
+            C9(Zindex(hub,j,k,Nodes)) = nseats(k);
+         end
+         C9(PSOindex(pso,actype,Nodes)) = -200; 
+         cplex.addRows(0,C9,Inf,sprintf('PSO_%d',j,pso)); 
+    end
     %%  Execute model
             cplex.Param.mip.limits.nodes.Cur    = 1e+8;         %max number of nodes to be visited (kind of max iterations)
             cplex.Param.timelimit.Cur           = 10;           %max time in seconds
@@ -204,14 +214,14 @@
      n_k    = transpose(dv(Nodes*Nodes*(actype+2)+1:Nodes*Nodes*(actype+2)+actype));
      pso    = transpose(dv(Nodes*Nodes*(actype+2)+actype+1:DV));
      
-     xlswrite('solution.xlsx',sol.profit,1,'B1');
-     xlswrite('solution.xlsx',n_k,1,'B2:D2');
-     xlswrite('solution.xlsx',x_ij,1,'B4:U23');
-     xlswrite('solution.xlsx',w_ij,1,'B25:U44');
-     xlswrite('solution.xlsx',z(:,:,1),2,'B4:U23');
-     xlswrite('solution.xlsx',z(:,:,2),2,'B25:U44');
-     xlswrite('solution.xlsx',z(:,:,3),2,'B46:U65');
-     xlswrite('solution.xlsx',pso,2,'B2:E2');
+%      xlswrite('solution.xlsx',sol.profit,1,'B1');
+%      xlswrite('solution.xlsx',n_k,1,'B2:D2');
+%      xlswrite('solution.xlsx',x_ij,1,'B4:U23');
+%      xlswrite('solution.xlsx',w_ij,1,'B25:U44');
+%      xlswrite('solution.xlsx',z(:,:,1),2,'B4:U23');
+%      xlswrite('solution.xlsx',z(:,:,2),2,'B25:U44');
+%      xlswrite('solution.xlsx',z(:,:,3),2,'B46:U65');
+%      xlswrite('solution.xlsx',pso,2,'B2:E2');
 %% Functions to determine the index of the DV based on (i,j,k)
 function out = Xindex(m,n,Nodes)
     out = (m - 1) * Nodes + n;   

@@ -16,11 +16,11 @@ function [c,yield,types,fleet,c_l,V,seats,tat,range,runway,d, ...
     airports = size(lat);    
     airports = airports(2); % Number of airports;
     
+    d = zeros(airports,airports);
     for i=1:airports   
         for j=1:airports
-           d(i,j) = 2*asin(((sin((lat(i)-lat(j)))/2)^2+ ...
-                    cos(lat(i))*cos(lat(j)) * ...
-                    (sin((long(i))-long(j))/2)^2)^0.5)*R_e;
+           d(i,j) = R_e*2*asin(((sin((lat(i)-lat(j))/2))^2+cos(lat(i))* ... 
+                    cos(lat(j))*(sin((long(i)-long(j))/2))^2)^(0.5));
         end
     end
     
@@ -44,9 +44,6 @@ function [c,yield,types,fleet,c_l,V,seats,tat,range,runway,d, ...
     costs= xlsread(filename,11,'M43:Q46'); 
     %leasing, fixed, time, fuel
     c_l  = costs(1,:);
-    c_f  = costs(2,:);
-    c_t  = costs(3,:);
-    c_fuel = costs(4,:);
     
     totalcost = zeros(airports,airports,types);
     for k=1:types
